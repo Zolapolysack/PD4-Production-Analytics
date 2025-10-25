@@ -3,15 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PD4 Production Calculator | เครื่องคำนวณการผลิต PD4</title>
-    <meta name="description" content="ระบบคำนวณการผลิต PD4 - เครื่องมือครบวงจรสำหรับการวางแผนการผลิตและการจัดการต้นทุนแรงงาน">
-    <meta name="keywords" content="PD4, Production Calculator, Machine-Days, Overtime Calculator, เครื่องคำนวณการผลิต">
-    <meta name="author" content="Awirut (ZP1048)">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    
-    <!-- CSS -->
+    <title>PD4 Production Calculator | คำนวเครื่องณการผลิต PD4</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,7 +197,7 @@
                                 <i class="fas fa-coins"></i>
                                 อัตราค่าแรงการทำงานที่ชั่วโมงการทำงานปกติ/วัน (บาท/วัน)
                             </label>
-                            <input type="number" id="regularWageRate" value="" min="200" max="2000" step="1" placeholder="เช่น 400">
+                            <input type="number" id="regularWageRate" value="" min="200" max="2000" step="1" placeholder="เช่น 347">
                             <small>อัตราค่าแรงปกติต่อวันต่อคน</small>
                         </div>
 
@@ -215,7 +207,7 @@
                                 <i class="fas fa-calendar-alt"></i>
                                 จำนวนวันทำงานที่ชั่วโมงการทำงานปกติ/เดือน (วัน/เดือน)
                             </label>
-                            <input type="number" id="regularWorkingDays" value="" min="20" max="31" step="1" placeholder="เช่น 22">
+                            <input type="number" id="regularWorkingDays" value="" min="20" max="31" step="1" placeholder="เช่น 24">
                             <small>จำนวนวันทำงานปกติต่อเดือน</small>
                         </div>
 
@@ -225,17 +217,17 @@
                                 <i class="fas fa-users"></i>
                                 จำนวนพนักงาน (ปกติ) (คน)
                             </label>
-                            <input type="number" id="regularEmployees" value="" min="1" max="100" step="1" placeholder="เช่น 13">
-                            <small>จำนวนพนักงานที่ทำงานในชั่วโมงปกติ</small>
+                            <input type="number" id="regularEmployees" value="" min="1" max="100" step="1" placeholder="เช่น 40">
+                            <small>จำนวนพนักงานที่ทำงานในชั่วโมงการทำงานปกติ</small>
                         </div>
 
                         <!-- OT Wage Rate -->
                         <div class="form-group">
                             <label for="otWageRate">
                                 <i class="fas fa-coins"></i>
-                                อัตราค่าแรงการทำงานที่ชั่วโมงการทำงานOT/วัน (บาท/วัน)
+                                อัตราค่าแรงการทำงานที่ชั่วโมงการทำงาน OT/วัน (บาท/วัน)
                             </label>
-                            <input type="number" id="otWageRate" value="" min="100" max="1000" step="1" placeholder="เช่น 200">
+                            <input type="number" id="otWageRate" value="" min="100" max="1000" step="1" placeholder="เช่น 195.1875">
                             <small>อัตราค่าแรง OT ต่อวันต่อคน</small>
                         </div>
 
@@ -243,7 +235,7 @@
                         <div class="form-group">
                             <label for="otWorkingDays">
                                 <i class="fas fa-calendar-alt"></i>
-                                จำนวนวันทำงานOT/เดือน (วัน/เดือน)
+                                จำนวนวันทำงาน OT/เดือน (วัน/เดือน)
                             </label>
                             <input type="number" id="otWorkingDays" value="" min="0" max="31" step="1" placeholder="เช่น 15">
                             <small>จำนวนวันที่มีการทำ OT ต่อเดือน</small>
@@ -255,7 +247,7 @@
                                 <i class="fas fa-users"></i>
                                 จำนวนพนักงาน (OT) (คน)
                             </label>
-                            <input type="number" id="otEmployees" value="" min="0" max="100" step="1" placeholder="เช่น 10">
+                            <input type="number" id="otEmployees" value="" min="0" max="100" step="1" placeholder="เช่น 30">
                             <small>จำนวนพนักงานที่ทำ OT</small>
                         </div>
 
@@ -325,12 +317,12 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>&copy;2025 PD4 Production Analytics. All rights reserved. Designed and developed by Awirut (ZP1048)</p>
+                <p>&copy;2025 PD4 Production Analytics. All rights reserved. Designed and developed by Awirut (ZP1048)
+</p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script src="assets/js/script.js"></script>
 </body>
 </html>

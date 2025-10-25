@@ -1,9 +1,12 @@
-# 🚀 GitHub Pages Readiness Report
+# 🚀 GitHub Pages Deployment Report
 
 **Project**: PD4 Production Calculator  
-**Version**: 2.0.0  
+**Version**: 2.1.0  
 **Date**: October 25, 2025  
-**Status**: ✅ READY FOR DEPLOYMENT
+**Status**: ✅ DEPLOYED SUCCESSFULLY
+
+**Latest Commit**: `6da04d0` - OT Hours Calculation Fix  
+**GitHub Pages URL**: https://zolapolysack.github.io/PD4-Production-Analytics/
 
 ---
 

@@ -640,19 +640,19 @@ class PD4Calculator {
                     <h4><i class="fas fa-info-circle"></i> สรุปข้อมูลการผลิต</h4>
                     <div class="production-summary">
                         <div class="summary-section regular-section">
-                            <h5><i class="fas fa-industry"></i> การผลิตที่ชั่วโมงการทำงานปกติ หากมีจำนวนเครื่องกะ A ${data.machinesA} เครื่อง กะ B ${data.machinesB} เครื่อง</h5>
+                            <h5>การผลิตที่ชั่วโมงการทำงานปกติ หากมีจำนวนเครื่องกะ A ${data.machinesA} เครื่อง กะ B ${data.machinesB} เครื่อง</h5>
                             <div class="summary-grid">
                                 <div class="summary-item">
-                                    <span>Machine-Days กะ A :</span> <span class="number-highlight">${regular.mdA.toFixed(1)}</span>
+                                    <span>Machine-Days กะ A :</span> <span>${regular.mdA.toFixed(1)}</span>
                                 </div>
                                 <div class="summary-item">
-                                    <span>Machine-Days กะ B :</span> <span class="number-highlight">${regular.mdB.toFixed(1)}</span>
+                                    <span>Machine-Days กะ B :</span> <span>${regular.mdB.toFixed(1)}</span>
                                 </div>
                                 <div class="summary-item">
-                                    <span>จำนวนนาทีที่ใช้ใน ชม.ทำงานปกติ :</span> <span class="number-highlight">${this.formatNumber(regular.minutes)}</span>
+                                    <span>จำนวนนาทีที่ใช้ใน ชม.ทำงานปกติ :</span> <span>${this.formatNumber(regular.minutes)}</span>
                                 </div>
                                 <div class="summary-item">
-                                    <span>ผลผลิตต่อวัน :</span> <span class="number-highlight">${this.formatNumber(regular.outputPerDay)} ใบ</span>
+                                    <span>ผลผลิตต่อวัน :</span> <span>${this.formatNumber(regular.outputPerDay)} ใบ</span>
                                 </div>
                             </div>
                         </div>
@@ -747,17 +747,17 @@ class PD4Calculator {
                 const avgOutputPerDay = totalOutput / data.workingDays;
                 
                 otSummaryHTML += `
-                    <div class="summary-section ot-section premium">
-                        <h5><i class="fas fa-rocket"></i> ${scenario.name} ${scenario.description}</h5>
+                    <div class="summary-section ot-section">
+                        <h5>${scenario.name} ${scenario.description}</h5>
                         <div class="summary-grid">
                             <div class="summary-item">
-                                <span>จำนวนวันที่ต้องทำ OT :</span> <span class="number-highlight">${scenario.days.toFixed(2)} วัน</span>
+                                <span>จำนวนวันที่ต้องทำ OT :</span> <span>${scenario.days.toFixed(2)} วัน</span>
                             </div>
                             <div class="summary-item">
-                                <span>จำนวนชั่วโมง OT :</span> <span class="number-highlight">${(scenario.days * (scenario.otHours || 3)).toFixed(2)} ชั่วโมง</span>
+                                <span>จำนวนชั่วโมง OT :</span> <span>${(scenario.days * (scenario.otHours || 3)).toFixed(2)} ชั่วโมง</span>
                             </div>
                             <div class="summary-item">
-                                <span>MD รวม ( วันทำงาน * เครื่องจักรที่เปิดใช้ในกะ A และ B ) OT :</span> <span class="number-highlight">${scenario.md.toFixed(1)}</span>
+                                <span>MD รวม ( วันทำงาน * เครื่องจักรที่เปิดใช้ในกะ A และ B ) OT :</span> <span>${scenario.md.toFixed(1)}</span>
                             </div>
                             <div class="summary-item">
                                 <span>ผลผลิตเพิ่มเติมจากโอที (OT) :</span> <span>${this.formatNumber(scenario.outputGain || 0)} ใบ</span>
@@ -887,16 +887,16 @@ class PD4Calculator {
             
             otSummaryHTML += `
                 <div class="summary-section ot-section">
-                    <h5><i class="fas fa-cog"></i> OT1 (7A + 4B) เงื่อนไขการเปิดเครื่องจักร กะ A 7 เครื่อง กะ B 4 เครื่อง</h5>
+                    <h5>OT1 (7A + 4B) เงื่อนไขการเปิดเครื่องจักร กะ A 7 เครื่อง กะ B 4 เครื่อง</h5>
                     <div class="summary-grid">
                         <div class="summary-item">
-                            <span>จำนวนวันที่ต้องทำ OT :</span> <span class="number-highlight">${ot1.days.toFixed(2)} วัน</span>
+                            <span>จำนวนวันที่ต้องทำ OT :</span> <span>${ot1.days.toFixed(2)} วัน</span>
                         </div>
                         <div class="summary-item">
-                            <span>จำนวนชั่วโมง OT :</span> <span class="number-highlight">${(ot1.days * (ot1.otHours || 3)).toFixed(2)} ชั่วโมง</span>
+                            <span>จำนวนชั่วโมง OT :</span> <span>${(ot1.days * (ot1.otHours || 3)).toFixed(2)} ชั่วโมง</span>
                         </div>
                         <div class="summary-item">
-                            <span>MD รวม ( วันทำงาน * เครื่องจักรที่เปิดใช้ในกะ A และ B ) OT :</span> <span class="number-highlight">${ot1.md.toFixed(1)}</span>
+                            <span>MD รวม ( วันทำงาน * เครื่องจักรที่เปิดใช้ในกะ A และ B ) OT :</span> <span>${ot1.md.toFixed(1)}</span>
                         </div>
                         <div class="summary-item">
                             <span>ผลผลิตเพิ่มเติมจากโอที (OT) :</span> <span>${this.formatNumber(ot1.outputGain || 0)} ใบ</span>
@@ -929,13 +929,13 @@ class PD4Calculator {
             
             otSummaryHTML += `
                 <div class="summary-section ot-section">
-                    <h5><i class="fas fa-cogs"></i> OT2 (8A + 4B) เงื่อนไขการเปิดเครื่องจักร กะ A 8 เครื่อง กะ B 4 เครื่อง</h5>
+                    <h5>OT2 (8A + 4B) เงื่อนไขการเปิดเครื่องจักร กะ A 8 เครื่อง กะ B 4 เครื่อง</h5>
                     <div class="summary-grid">
                         <div class="summary-item">
-                            <span>จำนวนวันที่ต้องทำ OT :</span> <span class="number-highlight">${ot2.days.toFixed(2)} วัน</span>
+                            <span>จำนวนวันที่ต้องทำ OT :</span> <span>${ot2.days.toFixed(2)} วัน</span>
                         </div>
                         <div class="summary-item">
-                            <span>จำนวนชั่วโมง OT :</span> <span class="number-highlight">${(ot2.days * (ot2.otHours || 3)).toFixed(2)} ชั่วโมง</span>
+                            <span>จำนวนชั่วโมง OT :</span> <span>${(ot2.days * (ot2.otHours || 3)).toFixed(2)} ชั่วโมง</span>
                         </div>
                         <div class="summary-item">
                             <span>MD รวม ( วันทำงาน * เครื่องจักรที่เปิดใช้ในกะ A และ B ) OT :</span> <span>${ot2.md.toFixed(1)}</span>
