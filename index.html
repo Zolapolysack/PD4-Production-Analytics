@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD4 Production Calculator | เครื่องคำนวณการผลิต PD4</title>
+    <meta name="description" content="ระบบคำนวณการผลิต PD4 - เครื่องมือครบวงจรสำหรับการวางแผนการผลิตและการจัดการต้นทุนแรงงาน">
+    <meta name="keywords" content="PD4, Production Calculator, Machine-Days, Overtime Calculator, เครื่องคำนวณการผลิต">
+    <meta name="author" content="Awirut (ZP1048)">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="assets/images/favicon.ico" alt="PD4 Logo" class="nav-logo">
+                <span> PD4 Production Analytics</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#calculator" class="nav-link">เครื่องคำนวณ</a>
+                <a href="#analysis" class="nav-link">วิเคราะห์ผล</a>
+                <a href="#wage-calculator" class="nav-link">คำนวณค่าแรง</a>
+                <a href="#about" class="nav-link">เกี่ยวกับ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                PD4 Production Analytics 
+            </h1>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section id="calculator" class="calculator-section">
+        <div class="wide-container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-calculator"></i>
+                    ระบบคำนวณการผลิต
+                </h2>
+                <p class="section-subtitle">
+                    กรอกข้อมูลการผลิตเพื่อคำนวณแผนการผลิตที่เหมาะสม
+                </p>
+            </div>
+
+            <div class="calculator-grid">
+                <!-- Input Panel -->
+                <div class="input-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-edit"></i> ข้อมูลการผลิต</h3>
+                    </div>
+                    
+                    <form id="calculatorForm" class="calculator-form">
+                        <!-- Target Production -->
+                        <div class="form-group">
+                            <label for="targetProduction">
+                                <i class="fas fa-bullseye"></i>
+                                เป้าหมายการผลิต (ใบ/เดือน)
+                            </label>
+                            <input type="text" id="targetProduction" value="" pattern="[0-9,]*" placeholder="เช่น 2,500,000">
+                            <small>เป้าหมายการผลิตรายเดือนที่ต้องการ</small>
+                        </div>
+
+                        <!-- Productivity -->
+                        <div class="form-group">
+                            <label for="productivity">
+                                <i class="fas fa-tachometer-alt"></i>
+                                ประสิทธิภาพการผลิต (ใบ/นาที)
+                            </label>
+                            <input type="number" id="productivity" value="" min="10" max="30" step="0.1" placeholder="เช่น 18">
+                            <small>ประสิทธิภาพการผลิตจำนวนใบที่ผลิตได้ต่อนาที</small>
+                        </div>
+
+                        <!-- Working Days -->
+                        <div class="form-group">
+                            <label for="workingDays">
+                                <i class="fas fa-calendar-alt"></i>
+                                วันทำงาน (วัน/เดือน)
+                            </label>
+                            <input type="number" id="workingDays" value="" min="20" max="31" step="1" placeholder="เช่น 22">
+                            <small>จำนวนวันทำงานต่อเดือน</small>
+                        </div>
+
+                        <!-- Working Hours -->
+                        <div class="form-group">
+                            <label for="workingHours">
+                                <i class="fas fa-clock"></i>
+                                ชั่วโมงทำงานปกติ (ชม./วัน)
+                            </label>
+                            <input type="number" id="workingHours" value="" min="6" max="12" step="0.5" placeholder="เช่น 7">
+                            <small>ชั่วโมงทำงานปกติต่อวัน</small>
+                        </div>
+
+                        <!-- OT Hours -->
+                        <div class="form-group">
+                            <label for="otHours">
+                                <i class="fas fa-clock"></i>
+                                ชั่วโมง OT (ชม./วัน) <span style="color: #6b7280; font-size: 0.9em;">[ไม่บังคับ]</span>
+                            </label>
+                            <input type="number" id="otHours" placeholder="กรอกถ้าต้องการดู OT scenarios" min="0" max="6" step="0.5">
+                            <small>ชั่วโมง Overtime ต่อวัน (เว้นว่างได้หากไม่ต้องการ OT)</small>
+                        </div>
+
+                        <!-- Machines Shift A -->
+                        <div class="form-group">
+                            <label for="machinesA">
+                                <i class="fas fa-cog"></i>
+                                เครื่องจักรกะ A (เครื่อง)
+                            </label>
+                            <input type="number" id="machinesA" value="" min="5" max="15" step="0.5" placeholder="เช่น 7">
+                            <small>จำนวนเครื่องจักรที่เปิดใช้งานในกะ A</small>
+                        </div>
+
+                        <!-- Machines Shift B -->
+                        <div class="form-group">
+                            <label for="machinesB">
+                                <i class="fas fa-cog"></i>
+                                เครื่องจักรกะ B (เครื่อง)
+                            </label>
+                            <input type="number" id="machinesB" value="" min="3" max="10" step="0.5" placeholder="เช่น 4">
+                            <small>จำนวนเครื่องจักรที่เปิดใช้งานในกะ B</small>
+                        </div>
+
+                        <button type="button" id="calculateBtn" class="calculate-btn">
+                            <i class="fas fa-calculator"></i>
+                            คำนวณผลลัพธ์
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-chart-bar"></i> ผลการคำนวณ</h3>
+                    </div>
+                    
+                    <div id="results" class="results-content">
+                        <div class="no-results">
+                            <i class="fas fa-info-circle"></i>
+                            <p>กรุณากรอกข้อมูลและกดคำนวณเพื่อดูผลลัพธ์</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analysis Section -->
+    <section id="analysis" class="analysis-section">
+        <div class="wide-container">
+            <div class="section-header">
+                <h2 class="section-title analysis-title">
+                    <i class="fas fa-chart-line"></i>
+                    การวิเคราะห์ผลลัพธ์
+                </h2>
+            </div>
+
+            <div id="analysisResults" class="analysis-content">
+                <div class="analysis-placeholder">
+                    <i class="fas fa-chart-pie"></i>
+                    <p>ข้อมูลการวิเคราะห์จะปรากฏหลังจากคำนวณแล้ว</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wage Calculator Section -->
+    <section id="wage-calculator" class="calculator-section">
+        <div class="wide-container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    การคำนวณค่าแรงพนักงาน
+                </h2>
+                <p class="section-subtitle">
+                    กรอกข้อมูลเพื่อคำนวณค่าแรงพนักงานในการผลิตตามเป้าหมายที่ตั้งไว้
+                </p>
+            </div>
+
+            <div class="calculator-grid">
+                <!-- Wage Input Panel -->
+                <div class="input-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-edit"></i>ข้อมูลการคำนวณค่าแรงพนักงาน</h3>
+                    </div>
+                    
+                    <form id="wageCalculatorForm" class="calculator-form">
+                        <!-- Regular Wage Rate -->
+                        <div class="form-group">
+                            <label for="regularWageRate">
+                                <i class="fas fa-coins"></i>
+                                อัตราค่าแรงการทำงานที่ชั่วโมงการทำงานปกติ/วัน (บาท/วัน)
+                            </label>
+                            <input type="number" id="regularWageRate" value="" min="200" max="2000" step="1" placeholder="เช่น 400">
+                            <small>อัตราค่าแรงปกติต่อวันต่อคน</small>
+                        </div>
+
+                        <!-- Regular Working Days -->
+                        <div class="form-group">
+                            <label for="regularWorkingDays">
+                                <i class="fas fa-calendar-alt"></i>
+                                จำนวนวันทำงานที่ชั่วโมงการทำงานปกติ/เดือน (วัน/เดือน)
+                            </label>
+                            <input type="number" id="regularWorkingDays" value="" min="20" max="31" step="1" placeholder="เช่น 22">
+                            <small>จำนวนวันทำงานปกติต่อเดือน</small>
+                        </div>
+
+                        <!-- Regular Employees -->
+                        <div class="form-group">
+                            <label for="regularEmployees">
+                                <i class="fas fa-users"></i>
+                                จำนวนพนักงาน (ปกติ) (คน)
+                            </label>
+                            <input type="number" id="regularEmployees" value="" min="1" max="100" step="1" placeholder="เช่น 13">
+                            <small>จำนวนพนักงานที่ทำงานในชั่วโมงปกติ</small>
+                        </div>
+
+                        <!-- OT Wage Rate -->
+                        <div class="form-group">
+                            <label for="otWageRate">
+                                <i class="fas fa-coins"></i>
+                                อัตราค่าแรงการทำงานที่ชั่วโมงการทำงานOT/วัน (บาท/วัน)
+                            </label>
+                            <input type="number" id="otWageRate" value="" min="100" max="1000" step="1" placeholder="เช่น 200">
+                            <small>อัตราค่าแรง OT ต่อวันต่อคน</small>
+                        </div>
+
+                        <!-- OT Working Days -->
+                        <div class="form-group">
+                            <label for="otWorkingDays">
+                                <i class="fas fa-calendar-alt"></i>
+                                จำนวนวันทำงานOT/เดือน (วัน/เดือน)
+                            </label>
+                            <input type="number" id="otWorkingDays" value="" min="0" max="31" step="1" placeholder="เช่น 15">
+                            <small>จำนวนวันที่มีการทำ OT ต่อเดือน</small>
+                        </div>
+
+                        <!-- OT Employees -->
+                        <div class="form-group">
+                            <label for="otEmployees">
+                                <i class="fas fa-users"></i>
+                                จำนวนพนักงาน (OT) (คน)
+                            </label>
+                            <input type="number" id="otEmployees" value="" min="0" max="100" step="1" placeholder="เช่น 10">
+                            <small>จำนวนพนักงานที่ทำ OT</small>
+                        </div>
+
+                        <button type="button" id="calculateWageBtn" class="calculate-btn">
+                            <i class="fas fa-calculator"></i>
+                            คำนวณค่าแรง
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Wage Results Panel -->
+                <div class="results-panel">
+                    <div class="panel-header">
+                        <h3><i class="fas fa-receipt"></i> ผลการคำนวณค่าแรง</h3>
+                    </div>
+                    
+                    <div id="wageResults" class="results-content">
+                        <div class="no-results">
+                            <i class="fas fa-info-circle"></i>
+                            <p>กรุณากรอกข้อมูลและกดคำนวณเพื่อดูผลลัพธ์ค่าแรง</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">
+                        <i class="fas fa-info-circle"></i>
+                        เกี่ยวกับระบบคำนวณการผลิต PD4
+                    </h2>
+                    <p>
+                        ระบบคำนวณการผลิต PD4 เป็นเครื่องมือสำหรับการวางแผนการผลิตและการจัดการต้นทุนแรงงาน โดยคำนวณจำนวน Machine-Days และชั่วโมง Overtime ที่จำเป็นเพื่อบรรลุเป้าหมายการผลิต พร้อมทั้งประเมินค่าใช้จ่ายด้านค่าแรงพนักงานทั้งในชั่วโมงการทำงานปกติและ OT
+                    </p>
+                    <p>
+                        ระบบช่วยให้ผู้ใช้งานสามารถตัดสินใจเรื่องการจัดสรรทรัพยากรบุคคลและควบคุมงบประมาณค่าแรงได้อย่างมีประสิทธิภาพ ทั้งนี้ควรพิจารณาปัจจัยจากสภาพงานจริง เช่น ความพร้อมของเครื่องจักร ความสามารถของพนักงาน และสถานการณ์ไม่คาดคิดที่อาจเกิดขึ้น เพื่อให้การวางแผนสอดคล้องกับความเป็นจริงในการดำเนินงาน
+                    </p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <h4>วิเคราะห์เปรียบเทียบ</h4>
+                            <p>เปรียบเทียบเป้าหมายกับผลผลิตที่คำนวณได้</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <h4>คำนวณค่าแรง</h4>
+                            <p>ประเมินค่าใช้จ่ายด้านค่าแรงพนักงานปกติและ OT</p>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-users-cog"></i>
+                            <h4>จัดการทรัพยากร</h4>
+                            <p>วางแผนจำนวนพนักงานและเครื่องจักรที่เหมาะสม</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy;2025 PD4 Production Analytics. All rights reserved. Designed and developed by Awirut (ZP1048)</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

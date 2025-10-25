@@ -1,0 +1,38 @@
+{
+  "name": "pd4-production-calculator",
+  "version": "2.0.0",
+  "description": "ระบบคำนวณการผลิต PD4 - เครื่องมือครบวงจรสำหรับการวางแผนการผลิตและการจัดการต้นทุนแรงงาน",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "build": "echo 'No build process required for static site'",
+    "test": "echo 'No tests specified'",
+    "deploy": "gh-pages -d .",
+    "serve": "serve -s . -p 8080"
+  },
+  "keywords": [
+    "production-calculator",
+    "machine-days",
+    "overtime-calculator",
+    "manufacturing",
+    "thai",
+    "pd4"
+  ],
+  "author": "Awirut (ZP1048)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/pd4-production-calculator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/pd4-production-calculator/issues"
+  },
+  "homepage": "https://your-username.github.io/pd4-production-calculator/",
+  "devDependencies": {
+    "gh-pages": "^4.0.0",
+    "serve": "^14.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
