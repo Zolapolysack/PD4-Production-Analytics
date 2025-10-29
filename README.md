@@ -2,7 +2,7 @@
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-blue)](https://your-username.github.io/pd4-production-calculator/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-2.0.0-green)](https://github.com/your-username/pd4-production-calculator)
+[![Version](https://img.shields.io/badge/Version-2.1.0-green)](https://github.com/your-username/pd4-production-calculator)
 
 > ระบบคำนวณการผลิต PD4 - เครื่องมือครบวงจรสำหรับการวางแผนการผลิตและการจัดการต้นทุนแรงงาน
 

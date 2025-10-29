@@ -2,6 +2,8 @@
 class PD4Calculator {
     constructor() {
         this.target = 2500000; // Default target
+        this.productionData = null; // Store production calculation results
+        this.wageData = null; // Store wage calculation results
         this.initializeEventListeners();
         // Reset form to default values on page load
         this.resetForm();
@@ -339,6 +341,9 @@ class PD4Calculator {
                 const isSpecial = this.isSpecialConfiguration(data.machinesA, data.machinesB);
                 console.log('Is special configuration:', isSpecial);
                 
+                let ot1 = null;
+                let ot2 = null;
+                
                 if (isSpecial) {
                     console.log('Using special scenarios');
                     // แสดง OT scenarios พิเศษ
@@ -351,13 +356,24 @@ class PD4Calculator {
                 } else {
                     console.log('Using regular scenarios');
                     // Calculate OT scenarios แบบปกติ
-                    const ot1 = this.calculateOT(data, regular, 7 + 4); // 7A + 4B = 11 machines
-                    const ot2 = this.calculateOT(data, regular, 8 + 4); // 8A + 4B = 12 machines
+                    ot1 = this.calculateOT(data, regular, 7 + 4); // 7A + 4B = 11 machines
+                    ot2 = this.calculateOT(data, regular, 8 + 4); // 8A + 4B = 12 machines
 
                     // Display results
                     this.displayResults(data, regular, ot1, ot2);
                     this.displayAnalysis(data, regular, ot1, ot2);
                 }
+                
+                // Store production data for executive summary
+                this.productionData = {
+                    input: data,
+                    regular: regular,
+                    ot1: ot1,
+                    ot2: ot2
+                };
+                
+                // Update executive summary
+                this.updateExecutiveSummary();
 
             } catch (error) {
                 console.error('Calculation error:', error);
@@ -743,7 +759,9 @@ class PD4Calculator {
         specialScenarios.forEach((scenario, index) => {
             if (scenario.reason === 'calculated') {
                 const totalOutput = regular.totalOutput + (scenario.outputGain || 0);
-                const otOutputPerDay = (scenario.outputGain || 0) / scenario.days;
+                const otOutputPerDay = (scenario.outputGain || 0) / scenario.days; // ผลผลิต OT ต่อวันที่ทำ OT
+                const regularOutputPerDay = regular.totalOutput / data.workingDays; // ผลผลิตปกติต่อวัน
+                const sumAvgOutputPerDay = regularOutputPerDay + otOutputPerDay; // รวมเฉลี่ย
                 const avgOutputPerDay = totalOutput / data.workingDays;
                 
                 otSummaryHTML += `
@@ -768,8 +786,8 @@ class PD4Calculator {
                             <div class="summary-item total">
                                 <span>ผลผลิตรวม (ชม.ทำงานปกติ + OT) :</span> <span>${this.formatNumber(totalOutput)} ใบ</span>
                             </div>
-                            <div class="summary-item">
-                                <span>เฉลี่ยผลผลิต/วัน (รายเดือน) รวมชั่วโมงการทำงานปกติและ OT :</span> <span>${this.formatNumber(avgOutputPerDay)} ใบ/วัน</span>
+                            <div class="summary-item highlight">
+                                <span>เฉลี่ยผลผลิต/วัน (รายเดือน) :</span> <span>${this.formatNumber(regularOutputPerDay)} + ${this.formatNumber(otOutputPerDay)} = ${this.formatNumber(sumAvgOutputPerDay)} ใบ/วัน</span>
                             </div>
                             <div class="summary-item">
                                 <span>% เทียบกับเป้าหมาย :</span> <span style="color: ${scenario.percent >= 100 ? '#10b981' : '#ef4444'}">${scenario.percent.toFixed(1)}%</span>
@@ -882,7 +900,8 @@ class PD4Calculator {
             const ot1OutputPerDay = (ot1.outputGain || 0) / ot1.days; // ผลผลิต OT ต่อวันที่ทำ OT
             
             // ผลผลิตรวมต่อวัน = (ผลผลิตปกติ + ผลผลิต OT) / วันทำงานทั้งหมด
-            const totalDaysUsed = data.workingDays + ot1.days; // วันปกติ + วัน OT
+            const regularOutputPerDay = regular.totalOutput / data.workingDays; // ผลผลิตปกติต่อวัน
+            const sumAvgOutputPerDay = regularOutputPerDay + ot1OutputPerDay; // รวมเฉลี่ย
             const avgOutputPerDay1 = totalOutputOT1 / data.workingDays; // เฉลี่ยต่อวันตามเป้าหมายรายเดือน
             
             otSummaryHTML += `
@@ -907,8 +926,8 @@ class PD4Calculator {
                         <div class="summary-item total">
                             <span>ผลผลิตรวม (ชม.ทำงานปกติ + OT) :</span> <span>${this.formatNumber(totalOutputOT1)} ใบ</span>
                         </div>
-                        <div class="summary-item">
-                            <span>เฉลี่ยผลผลิต/วัน (รายเดือน) รวมชั่วโมงการทำงานปกติและ OT :</span> <span>${this.formatNumber(avgOutputPerDay1)} ใบ/วัน</span>
+                        <div class="summary-item highlight">
+                            <span>เฉลี่ยผลผลิต/วัน (รายเดือน) :</span> <span>${this.formatNumber(regularOutputPerDay)} + ${this.formatNumber(ot1OutputPerDay)} = ${this.formatNumber(sumAvgOutputPerDay)} ใบ/วัน</span>
                         </div>
                         <div class="summary-item">
                             <span>% เทียบกับเป้าหมาย :</span> <span style="color: ${ot1.percent >= 100 ? '#10b981' : '#ef4444'}">${ot1.percent.toFixed(1)}%</span>
@@ -924,7 +943,8 @@ class PD4Calculator {
             const ot2OutputPerDay = (ot2.outputGain || 0) / ot2.days; // ผลผลิต OT ต่อวันที่ทำ OT
             
             // ผลผลิตรวมต่อวัน = (ผลผลิตปกติ + ผลผลิต OT) / วันทำงานทั้งหมด
-            const totalDaysUsed = data.workingDays + ot2.days; // วันปกติ + วัน OT
+            const regularOutputPerDay = regular.totalOutput / data.workingDays; // ผลผลิตปกติต่อวัน
+            const sumAvgOutputPerDay = regularOutputPerDay + ot2OutputPerDay; // รวมเฉลี่ย
             const avgOutputPerDay2 = totalOutputOT2 / data.workingDays; // เฉลี่ยต่อวันตามเป้าหมายรายเดือน
             
             otSummaryHTML += `
@@ -949,8 +969,8 @@ class PD4Calculator {
                         <div class="summary-item total">
                             <span>ผลผลิตรวม (ชม.ทำงานปกติ + OT) :</span> <span>${this.formatNumber(totalOutputOT2)} ใบ</span>
                         </div>
-                        <div class="summary-item">
-                            <span>เฉลี่ยผลผลิต/วัน (รายเดือน) รวมชั่วโมงการทำงานปกติและ OT :</span> <span>${this.formatNumber(avgOutputPerDay2)} ใบ/วัน</span>
+                        <div class="summary-item highlight">
+                            <span>เฉลี่ยผลผลิต/วัน (รายเดือน) :</span> <span>${this.formatNumber(regularOutputPerDay)} + ${this.formatNumber(ot2OutputPerDay)} = ${this.formatNumber(sumAvgOutputPerDay)} ใบ/วัน</span>
                         </div>
                         <div class="summary-item">
                             <span>% เทียบกับเป้าหมาย :</span> <span style="color: ${ot2.percent >= 100 ? '#10b981' : '#ef4444'}">${ot2.percent.toFixed(1)}%</span>
@@ -1112,21 +1132,506 @@ class PD4Calculator {
         `;
         
         wageResultsContainer.innerHTML = wageResultsHTML;
+        
+        // Store wage data for executive summary
+        this.wageData = {
+            input: inputData,
+            results: {
+                regularWage: results.regularWageMonthly,
+                otWage: results.otWageMonthly,
+                totalWage: results.totalWage
+            }
+        };
+        
+        // Update executive summary
+        this.updateExecutiveSummary();
+    }
+    
+    updateExecutiveSummary() {
+        const summaryContainer = document.getElementById('executiveSummaryContent');
+        
+        // ตรวจสอบว่ามีข้อมูลครบหรือไม่
+        if (!this.productionData && !this.wageData) {
+            summaryContainer.innerHTML = `
+                <div class="no-summary">
+                    <i class="fas fa-chart-line"></i>
+                    <p>กรุณาคำนวณข้อมูลการผลิตและค่าแรงพนักงานก่อน</p>
+                    <p class="hint">เพื่อดูสรุปภาพรวมที่สมบูรณ์</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // สร้าง Executive Summary HTML
+        let summaryHTML = '<div class="summary-grid">';
+        
+        // KPI Cards
+        summaryHTML += this.generateKPICards();
+        
+        // Summary Panels
+        summaryHTML += '<div class="summary-panels">';
+        
+        if (this.productionData) {
+            summaryHTML += this.generateProductionSummaryPanel();
+        }
+        
+        if (this.wageData) {
+            summaryHTML += this.generateWageSummaryPanel();
+        }
+        
+        summaryHTML += '</div>';
+        
+        // Visual Comparison
+        if (this.productionData) {
+            summaryHTML += this.generateVisualComparison();
+        }
+        
+        // เอา Action Insights ออก - ไม่แสดงคำแนะนำและข้อมูลเชิงลึกอีกต่อไป
+        
+        summaryHTML += '</div>';
+        
+        summaryContainer.innerHTML = summaryHTML;
+    }
+    
+    generateKPICards() {
+        let html = '<div class="kpi-row">';
+        
+        // การผลิตรวม
+        if (this.productionData && this.productionData.regular) {
+            const regular = this.productionData.regular;
+            const target = this.productionData.input.targetProduction;
+            const achievement = (regular.output / target * 100).toFixed(1);
+            const statusClass = regular.output >= target ? 'success' : 'warning';
+            
+            html += `
+                <div class="kpi-card ${statusClass}">
+                    <div class="kpi-header">
+                        <div class="kpi-icon ${statusClass}">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-label">การผลิตรวม</div>
+                    <div class="kpi-value">${this.formatNumber(regular.output)}</div>
+                    <div class="kpi-subtext">ใบ/เดือน (${achievement}% ของเป้าหมาย)</div>
+                </div>
+            `;
+        }
+        
+        // ค่าแรงรวม - ใช้ไอคอน briefcase แทน money-bill-wave
+        if (this.wageData && this.wageData.results) {
+            const totalWage = this.wageData.results.totalWage;
+            
+            html += `
+                <div class="kpi-card warning">
+                    <div class="kpi-header">
+                        <div class="kpi-icon warning">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-label">ค่าแรงรวม</div>
+                    <div class="kpi-value">${this.formatNumber(totalWage)}</div>
+                    <div class="kpi-subtext">บาท/เดือน</div>
+                </div>
+            `;
+        }
+        
+        html += '</div>';
+        return html;
+    }
+    
+    generateProductionSummaryPanel() {
+        const data = this.productionData;
+        const regular = data.regular;
+        const input = data.input;
+        
+        return `
+            <div class="summary-panel">
+                <div class="summary-panel-header">
+                    <div class="summary-panel-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <div class="summary-panel-title">สรุปการผลิต</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">เป้าหมายการผลิต</div>
+                    <div class="summary-data-value">${this.formatNumber(input.targetProduction)} ใบ/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ผลผลิตจริงที่ชั่วโมงการทำงาน (ปกติ)</div>
+                    <div class="summary-data-value highlight">${this.formatNumber(regular.output)} ใบ/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ผลผลิตต่อวัน</div>
+                    <div class="summary-data-value">${this.formatNumber(regular.outputPerDay)} ใบ/วัน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ประสิทธิภาพ</div>
+                    <div class="summary-data-value">${input.productivity} ใบ/นาที</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนเครื่องที่เปิดใช้กะ A</div>
+                    <div class="summary-data-value">${input.machinesA} เครื่อง</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนเครื่องที่เปิดใช้กะ B</div>
+                    <div class="summary-data-value">${input.machinesB} เครื่อง</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนวันทำงาน</div>
+                    <div class="summary-data-value">${input.workingDays} วัน/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ชั่วโมงทำงาน/วัน</div>
+                    <div class="summary-data-value">${input.workingHours} ชั่วโมง/วัน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">สถานะเป้าหมาย</div>
+                    <div class="summary-data-value ${regular.output >= input.targetProduction ? 'success' : 'danger'}">
+                        ${regular.output >= input.targetProduction ? '✓ ถึงเป้า' : '✗ ไม่ถึงเป้า'}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    generateWageSummaryPanel() {
+        // ตรวจสอบข้อมูลก่อนเข้าถึง properties
+        if (!this.wageData || !this.wageData.results || !this.wageData.input) {
+            return '';
+        }
+        
+        const wageData = this.wageData;
+        const results = wageData.results;
+        const input = wageData.input;
+        
+        // ตรวจสอบแต่ละค่าก่อนแสดงผล
+        const regularWage = results.regularWage || 0;
+        const otWage = results.otWage || 0;
+        const totalWage = results.totalWage || 0;
+        const regularEmployees = input.regularEmployees || 0;
+        const otEmployees = input.otEmployees || 0;
+        const regularWageRate = input.regularWageRate || 0;
+        const otWageRate = input.otWageRate || 0;
+        const regularWorkingDays = input.regularWorkingDays || 0;
+        const otWorkingDays = input.otWorkingDays || 0;
+        
+        return `
+            <div class="summary-panel">
+                <div class="summary-panel-header">
+                    <div class="summary-panel-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="summary-panel-title">สรุปค่าแรงพนักงาน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ค่าแรงชั่วโมงการทำงานปกติ</div>
+                    <div class="summary-data-value">${this.formatNumber(regularWage)} บาท/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ค่าแรงชั่วโมงการทำงาน OT</div>
+                    <div class="summary-data-value">${this.formatNumber(otWage)} บาท/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">ค่าแรงรวมทั้งหมด</div>
+                    <div class="summary-data-value highlight">${this.formatNumber(totalWage)} บาท/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนพนักงาน ปกติ</div>
+                    <div class="summary-data-value">${this.formatEmployeeNumber(regularEmployees)} คน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนพนักงาน OT</div>
+                    <div class="summary-data-value">${this.formatEmployeeNumber(otEmployees)} คน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">อัตราค่าแรง ปกติ</div>
+                    <div class="summary-data-value">${this.formatWageRate(regularWageRate)} บาท/วัน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">อัตราค่าแรง OT</div>
+                    <div class="summary-data-value">${this.formatWageRate(otWageRate)} บาท/วัน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนวันทำงาน ปกติ</div>
+                    <div class="summary-data-value">${regularWorkingDays} วัน/เดือน</div>
+                </div>
+                <div class="summary-data-row">
+                    <div class="summary-data-label">จำนวนวันทำงาน OT</div>
+                    <div class="summary-data-value">${otWorkingDays} วัน/เดือน</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    generateVisualComparison() {
+        // ตรวจสอบว่ามีข้อมูลครบถ้วนหรือไม่
+        if (!this.productionData || !this.productionData.regular || !this.productionData.input) {
+            return '';
+        }
+        
+        const data = this.productionData;
+        const regular = data.regular;
+        const target = data.input.targetProduction;
+        
+        // ตรวจสอบค่าก่อนคำนวณเพื่อป้องกัน NaN
+        if (!regular.output || !target || target === 0) {
+            return '';
+        }
+        
+        const achievement = (regular.output / target * 100);
+        const gap = target - regular.output;
+        
+        let html = `
+            <div class="visual-comparison">
+                <div class="comparison-header">
+                    <div class="comparison-title">
+                        <i class="fas fa-chart-bar"></i> เปรียบเทียบเป้าหมายกับผลผลิต
+                    </div>
+                    <div class="comparison-subtitle">แสดงความสัมพันธ์ระหว่างเป้าหมายและผลการผลิตจริง</div>
+                </div>
+                <div class="comparison-bars">
+                    <div class="comparison-item">
+                        <div class="comparison-item-header">
+                            <div class="comparison-item-label">เป้าหมายการผลิต</div>
+                            <div class="comparison-item-value">${this.formatNumber(target)} ใบ</div>
+                        </div>
+                        <div class="comparison-bar-container">
+                            <div class="comparison-bar" style="width: 100%">
+                                100%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-item-header">
+                            <div class="comparison-item-label">ผลผลิตจริง (ปกติ)</div>
+                            <div class="comparison-item-value">${this.formatNumber(regular.output)} ใบ</div>
+                        </div>
+                        <div class="comparison-bar-container">
+                            <div class="comparison-bar ${regular.output >= target ? 'success' : 'warning'}" style="width: ${Math.min(achievement, 100)}%">
+                                ${achievement.toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+        `;
+        
+        if (regular.output < target) {
+            html += `
+                    <div class="comparison-item">
+                        <div class="comparison-item-header">
+                            <div class="comparison-item-label">ส่วนต่างที่ขาด</div>
+                            <div class="comparison-item-value">${this.formatNumber(gap)} ใบ</div>
+                        </div>
+                        <div class="comparison-bar-container">
+                            <div class="comparison-bar danger" style="width: ${(gap / target * 100)}%">
+                                ${(gap / target * 100).toFixed(1)}%
+                            </div>
+                        </div>
+                    </div>
+            `;
+        }
+        
+        // เพิ่มแสดงข้อมูลค่าแรง
+        if (this.wageData && this.wageData.results) {
+            const totalWage = this.wageData.results.totalWage;
+            const regularWage = this.wageData.results.regularWage;
+            const otWage = this.wageData.results.otWage;
+            
+            // ตรวจสอบค่าก่อนแสดงผลเพื่อป้องกัน NaN
+            if (totalWage && totalWage > 0) {
+                const regularPercentage = ((regularWage || 0) / totalWage * 100).toFixed(1);
+                const otPercentage = ((otWage || 0) / totalWage * 100).toFixed(1);
+                
+                html += `
+                    <div class="comparison-item" style="margin-top: 2rem;">
+                        <div class="comparison-item-header">
+                            <div class="comparison-item-label">ค่าแรงรวมทั้งหมด</div>
+                            <div class="comparison-item-value">${this.formatNumber(totalWage)} บาท</div>
+                        </div>
+                        <div class="comparison-bar-container">
+                            <div class="comparison-bar warning" style="width: 100%">
+                                100%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-item-header">
+                            <div class="comparison-item-label">รวมค่าแรง ปกติ</div>
+                            <div class="comparison-item-value">${this.formatNumber(regularWage || 0)} บาท</div>
+                        </div>
+                        <div class="comparison-bar-container">
+                            <div class="comparison-bar info" style="width: ${regularPercentage}%">
+                                ${regularPercentage}%
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-item">
+                        <div class="comparison-item-header">
+                            <div class="comparison-item-label">รวมค่าแรง OT</div>
+                            <div class="comparison-item-value">${this.formatNumber(otWage || 0)} บาท</div>
+                        </div>
+                        <div class="comparison-bar-container">
+                            <div class="comparison-bar warning" style="width: ${otPercentage}%">
+                                ${otPercentage}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        html += `
+                </div>
+            </div>
+        `;
+        
+        return html;
+    }
+    
+    generateActionInsights() {
+        const insights = [];
+        
+        // Production insights
+        if (this.productionData) {
+            const regular = this.productionData.regular;
+            const target = this.productionData.input.targetProduction;
+            
+            if (regular.output >= target) {
+                insights.push({
+                    icon: 'check-circle',
+                    text: `✓ ผลผลิตบรรลุเป้าหมายแล้ว (${(regular.output / target * 100).toFixed(1)}%) ไม่จำเป็นต้องเพิ่ม OT`
+                });
+            } else {
+                const gap = target - regular.output;
+                insights.push({
+                    icon: 'exclamation-triangle',
+                    text: `⚠ ผลผลิตยังขาดอีก ${this.formatNumber(gap)} ใบ (${((gap / target) * 100).toFixed(1)}%) เพื่อให้ถึงเป้าหมาย`
+                });
+                
+                // คำนวณจำนวน OT ที่ต้องการ
+                const productivity = this.productionData.input.productivity;
+                const minutesNeeded = gap / productivity;
+                const hoursNeeded = (minutesNeeded / 60).toFixed(1);
+                
+                insights.push({
+                    icon: 'clock',
+                    text: `💡 แนะนำ: จำเป็นต้องเพิ่มเวลาการทำงานอีกประมาณ ${hoursNeeded} ชั่วโมง หรือเพิ่มประสิทธิภาพการผลิต`
+                });
+            }
+            
+            // MD efficiency - เอาออกเพราะไม่ต้องการแสดง
+            // const mdEfficiency = (regular.output / regular.mdTotal).toFixed(0);
+        }
+        
+        // Wage insights
+        if (this.wageData && this.wageData.results && this.productionData && this.productionData.regular) {
+            const totalWage = this.wageData.results.totalWage;
+            const regularWage = this.wageData.results.regularWage;
+            const otWage = this.wageData.results.otWage;
+            const output = this.productionData.regular.output;
+            
+            // เอา cost per unit ออก - ไม่แสดงอีกต่อไป
+            
+            if (totalWage && totalWage > 0) {
+                const otPercentage = (otWage / totalWage * 100).toFixed(1);
+                if (otPercentage > 30) {
+                    insights.push({
+                        icon: 'exclamation-circle',
+                        text: `⚠ ค่าแรง OT สูง (${otPercentage}%) - พิจารณาเพิ่มพนักงานประจำเพื่อลดต้นทุน OT`
+                    });
+                } else {
+                    insights.push({
+                        icon: 'check-circle',
+                        text: `✓ ค่าแรง OT อยู่ในระดับที่เหมาะสม (${otPercentage}%) - สัดส่วนค่าแรงปกติและ OT สมดุลดี`
+                    });
+                }
+            }
+        }
+        
+        // General recommendations
+        if (this.productionData && this.wageData) {
+            insights.push({
+                icon: 'lightbulb',
+                text: `💡 คำแนะนำ: ติดตามผลการผลิตอย่างสม่ำเสมอและปรับแผนตามความจำเป็นเพื่อเพิ่มประสิทธิภาพและลดต้นทุน`
+            });
+        }
+        
+        let html = `
+            <div class="action-insights">
+                <div class="insights-header">
+                    <div class="insights-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insights-title">คำแนะนำและข้อมูลเชิงลึก</div>
+                </div>
+                <ul class="insights-list">
+        `;
+        
+        insights.forEach(insight => {
+            html += `
+                <li class="insight-item">
+                    <div class="insight-icon">
+                        <i class="fas fa-${insight.icon}"></i>
+                    </div>
+                    <div class="insight-text">${insight.text}</div>
+                </li>
+            `;
+        });
+        
+        html += `
+                </ul>
+            </div>
+        `;
+        
+        return html;
+    }
+
+    formatNumber(number) {
+        // ตรวจสอบและจัดการค่า NaN, null, undefined
+        if (number === null || number === undefined || isNaN(number)) {
+            return '0';
+        }
+        // แปลงให้เป็น number ก่อน format
+        const num = Number(number);
+        if (isNaN(num)) {
+            return '0';
+        }
+        // Format ด้วย thousands separator
+        return num.toLocaleString('en-US');
     }
 
     formatEmployeeNumber(number) {
+        // ตรวจสอบค่า null/undefined/NaN ก่อน
+        if (number === null || number === undefined || isNaN(number)) {
+            return '0';
+        }
+        const num = Number(number);
+        if (isNaN(num)) {
+            return '0';
+        }
         // แสดงทศนิยมหากเป็นจำนวนที่มีทศนิยม ไม่ใช่จำนวนเต็ม
-        return number % 1 === 0 ? number.toString() : number.toFixed(1);
+        return num % 1 === 0 ? num.toString() : num.toFixed(1);
     }
 
     formatWageRate(number) {
+        // ตรวจสอบค่า null/undefined/NaN ก่อน
+        if (number === null || number === undefined || isNaN(number)) {
+            return '0';
+        }
+        const num = Number(number);
+        if (isNaN(num)) {
+            return '0';
+        }
+        
         // แสดงอัตราค่าแรงแบบรักษาทศนิยมตามที่กรอกเข้ามา
-        if (number % 1 === 0) {
+        if (num % 1 === 0) {
             // หากเป็นเลขจำนวนเต็ม ใช้ formatNumber เพื่อใส่ comma
-            return this.formatNumber(number);
+            return this.formatNumber(num);
         } else {
             // หากมีทศนิยม ให้แสดงทศนิยมและใส่ comma หากจำเป็น
-            const formatted = number.toLocaleString('en-US', {
+            const formatted = num.toLocaleString('en-US', {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 4
             });
