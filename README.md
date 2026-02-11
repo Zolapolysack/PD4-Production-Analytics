@@ -6,21 +6,21 @@
 
 > ระบบคำนวณการผลิต PD4 - เครื่องมือครบวงจรสำหรับการวางแผนการผลิตและการจัดการต้นทุนแรงงาน
 
-## 🚀 Features
+##  Features
 
-### 📊 **ระบบคำนวณการผลิต**
+###  **ระบบคำนวณการผลิต**
 - คำนวณจำนวน Machine-Days (MD) 
 - วิเคราะห์ชั่วโมง Overtime ที่จำเป็น
 - เปรียบเทียบผลผลิตกับเป้าหมาย
 - รองรับสถานการณ์พิเศษ (9A+4B, 9A+5B, 10A+4B, 10A+5B)
 
-### 💰 **ระบบคำนวณค่าแรงพนักงาน**
+###  **ระบบคำนวณค่าแรงพนักงาน**
 - คำนวณค่าแรงปกติรายเดือน
 - คำนวณค่าแรง OT รายเดือน
 - แสดงผลรวมค่าแรงทั้งหมด
 - รองรับทศนิยมสำหรับความแม่นยำ
 
-### 🎯 **การวิเคราะห์ผลลัพธ์**
+###  **การวิเคราะห์ผลลัพธ์**
 - การวิเคราะห์เปรียบเทียบ
 - คำแนะนำการตัดสินใจ
 - การแสดงผลแบบ Real-time
@@ -33,7 +33,7 @@
 - **Fonts**: Kanit (Google Fonts)
 - **Deployment**: GitHub Pages
 
-## 📱 Browser Support
+##  Browser Support
 
 - Chrome (recommended)
 - Firefox
@@ -41,12 +41,6 @@
 - Edge
 - Mobile browsers
 
-## 🚀 Quick Start
-
-### Online Demo
-Visit: [https://your-username.github.io/pd4-production-calculator/](https://your-username.github.io/pd4-production-calculator/)
-
-### Local Development
 
 1. **Clone the repository**
    ```bash
@@ -71,7 +65,7 @@ Visit: [https://your-username.github.io/pd4-production-calculator/](https://your
    http://localhost:8080
    ```
 
-## 📖 Usage Guide
+##  Usage Guide
 
 ### การคำนวณการผลิต
 
@@ -102,7 +96,7 @@ Visit: [https://your-username.github.io/pd4-production-calculator/](https://your
    - จำนวนวันทำ OT
    - จำนวนพนักงาน OT
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 pd4-production-calculator/
@@ -120,36 +114,8 @@ pd4-production-calculator/
 └── .gitignore           # Git ignore rules
 ```
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
 
-**Awirut (ZP1048)**
-- GitHub: [@your-username](https://github.com/your-username)
-- Email: your-email@example.com
-
-## 🙏 Acknowledgments
-
-- Font Awesome for icons
-- Google Fonts for Kanit typography
-- GitHub Pages for hosting
-
-## 📞 Support
-
-หากมีคำถามหรือปัญหา:
-- เปิด [Issue](https://github.com/your-username/pd4-production-calculator/issues)
-- ส่งอีเมล์มาที่: your-email@example.com
-
----
-
-**⚡ Built with ❤️ for Production Planning Excellence**
