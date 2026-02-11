@@ -25,7 +25,7 @@
 - คำแนะนำการตัดสินใจ
 - การแสดงผลแบบ Real-time
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Styling**: Custom CSS with CSS Grid and Flexbox
